@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FilmEntity, ScheduleEntity } from 'src/films/entities/films.entities';
+import { FilmEntity, ScheduleEntity } from '../films/entities/films.entities';
+
 import { Repository } from 'typeorm';
 
 export interface FilmSchedule {

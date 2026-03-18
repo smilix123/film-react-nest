@@ -9,6 +9,7 @@ import { FilmsService } from './films/films.service';
 import { OrderController } from './order/order.controller';
 import { OrderService } from './order/order.service';
 import { FilmsRepository } from './repository/films.repository';
+import { LoggerModule } from './logger/logger.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { FilmsRepository } from './repository/films.repository';
       },
     }),
     DatabaseModule,
+    LoggerModule,
   ],
   controllers: [FilmsController, OrderController],
   providers: [configProvider, FilmsRepository, FilmsService, OrderService],
