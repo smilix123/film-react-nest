@@ -38,8 +38,8 @@ jobs:
           file: ./backend/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ env.OWNER }}/film-backend:latest
-            ghcr.io/${{ env.OWNER }}/film-backend:${{ github.sha }}
+            ghcr.io/${{ env.OWNER }}/film-react-nest-backend:latest
+            ghcr.io/${{ env.OWNER }}/film-react-nest-backend:${{ github.sha }}
 
       - name: Build and push frontend
         uses: docker/build-push-action@v5
@@ -48,8 +48,8 @@ jobs:
           file: ./frontend/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ env.OWNER }}/film-frontend:latest
-            ghcr.io/${{ env.OWNER }}/film-frontend:${{ github.sha }}
+            ghcr.io/${{ env.OWNER }}/film-react-nest-frontend:latest
+            ghcr.io/${{ env.OWNER }}/film-react-nest-frontend:${{ github.sha }}
 
       - name: Build and push nginx
         uses: docker/build-push-action@v5
@@ -58,8 +58,8 @@ jobs:
           file: ./nginx/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ env.OWNER }}/film-nginx:latest
-            ghcr.io/${{ env.OWNER }}/film-nginx:${{ github.sha }}
+            ghcr.io/${{ env.OWNER }}/film-react-nest-nginx:latest
+            ghcr.io/${{ env.OWNER }}/film-react-nest-nginx:${{ github.sha }}
 
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
