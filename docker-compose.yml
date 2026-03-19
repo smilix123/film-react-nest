@@ -4,18 +4,21 @@ services:
     container_name: film-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${DATABASE_USERNAME}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_NAME: ${DATABASE_NAME}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./backend/test:/docker-entrypoint-initdb.d
+      - ./backend/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     ports:
       - '${DATABASE_PORT}:5432'
     networks:
       - afisha-network
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${DATABASE_USERNAME} -d ${DATABASE_NAME}']
+      test: ['CMD-SHELL', 'pg_isready -U ${DATABASE_USER} -d ${DATABASE_NAME}']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -37,15 +40,17 @@ services:
       - pgadmin_data:/var/lib/pgadmin
 
   backend:
-    image: ghcr.io/smilix123/film-react-nest-backend:latest
+    image: ghcr.io/${OWNER}/film-react-nest-backend:latest
     container_name: film-backend
+    build:
+      context: backend
     restart: unless-stopped
-    env_file:
-      - .env
     environment:
+      DATABASE_DRIVER: ${DATABASE_DRIVER}
       DATABASE_HOST: ${DATABASE_HOST}
       DATABASE_PORT: ${DATABASE_PORT}
-      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_URL: ${DATABASE_DRIVER}://database:${DATABASE_PORT}/${DATABASE_NAME}
+      DATABASE_USERNAME: ${DATABASE_USER}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       DATABASE_NAME: ${DATABASE_NAME}
       PORT: ${PORT}
@@ -61,17 +66,24 @@ services:
       - afisha-network
 
   frontend:
-    image: ghcr.io/smilix123/film-react-nest-frontend:latest
+    image: ghcr.io/${OWNER}/film-react-nest-frontend:latest
     container_name: film-frontend
-    restart: unless-stopped
+    build:
+      context: frontend
+    environment:
+      VITE_BASE_URL: /
+      VITE_API_URL: ${VITE_API_URL}
+      VITE_CDN_URL: ${VITE_CDN_URL}
     volumes:
-      - frontend_build:/build
+      - frontend_build:/app/dist
     networks:
       - afisha-network
 
   nginx:
-    image: ghcr.io/smilix123/film-react-nest-nginx:latest
+    image: ghcr.io/${OWNER}/film-react-nest-nginx:latest
     container_name: film-nginx
+    build:
+      context: nginx
     restart: unless-stopped
     ports:
       - '80:80'
@@ -81,37 +93,6 @@ services:
     depends_on:
       - backend
       - frontend
-    networks:
-      - afisha-network
-
-  db-init:
-    image: postgres:18-alpine
-    container_name: film-db-init
-    restart: 'no'
-    depends_on:
-      - postgres
-    environment:
-      PGPASSWORD: ${DATABASE_PASSWORD}
-    volumes:
-      - ./backend/test:/sql
-    entrypoint: |
-      sh -c "
-        echo 'Ожидание PostgreSQL...'
-        until pg_isready -h postgres -U ${DATABASE_USERNAME}; do
-          sleep 2
-        done
-        
-        echo 'Создание таблиц...'
-        psql -h postgres -U ${DATABASE_USERNAME} -d ${DATABASE_NAME} -f /sql/prac.init.sql
-        
-        echo 'Загрузка фильмов...'
-        psql -h postgres -U ${DATABASE_USERNAME} -d ${DATABASE_NAME} -f /sql/prac.films.sql
-        
-        echo 'Загрузка расписания...'
-        psql -h postgres -U ${DATABASE_USERNAME} -d ${DATABASE_NAME} -f /sql/prac.shedules.sql
-        
-        echo 'Инициализация базы данных завершена!'
-      "
     networks:
       - afisha-network
 
