@@ -95,6 +95,7 @@ services:
       - '80:80'
     volumes:
       - frontend_build:/usr/share/nginx/html:ro
+      - ./backend/public/content:/usr/share/nginx/html/content
     depends_on:
       backend:
         condition: service_started
