@@ -5,7 +5,7 @@ export const configProvider = {
   useFactory: (configService: ConfigService): AppConfig => ({
     database: {
       driver: configService.get('DATABASE_DRIVER', 'postgres'),
-      host: configService.get('DATABASE_HOST', 'localhost'),
+      host: configService.get('DATABASE_HOST', 'postgres'),
       port: parseInt(configService.get('DATABASE_PORT', '5432'), 10),
       username: configService.get('DATABASE_USER', 'student'),
       password: configService.get('DATABASE_PASSWORD', '123456'),

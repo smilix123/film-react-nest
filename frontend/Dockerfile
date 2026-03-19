@@ -10,6 +10,11 @@ RUN npm install @rollup/rollup-linux-x64-gnu --no-save || true
 
 COPY . .
 
+ARG VITE_API_URL
+ARG VITE_CDN_URL
+ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_CDN_URL=$VITE_CDN_URL
+
 RUN npm run build
 
 FROM alpine:latest

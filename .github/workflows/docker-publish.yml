@@ -47,6 +47,9 @@ jobs:
           context: '{{defaultContext}}:frontend'
           push: true
           tags: ghcr.io/${{ env.REPO }}/film-react-nest-frontend:latest
+          build-args: |
+            VITE_API_URL=${{ vars.VITE_API_URL }}
+            VITE_CDN_URL=${{ vars.VITE_CDN_URL }}
 
       - name: Build and push nginx
         uses: docker/build-push-action@v6
