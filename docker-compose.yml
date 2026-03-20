@@ -78,6 +78,9 @@ services:
   nginx:
     image: ghcr.io/${OWNER}/film-react-nest-nginx:latest
     container_name: film-nginx
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
     restart: unless-stopped
     ports:
       - '80:80'
