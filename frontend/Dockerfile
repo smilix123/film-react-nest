@@ -1,21 +1,19 @@
-FROM node:20 as builder
+# Этап 1: Сборка
+FROM node:20-alpine AS build
 WORKDIR /app
-
 COPY package*.json ./
-
-RUN npm install --legacy-peer-deps
+RUN npm ci
 
 # Принудительно устанавливаем проблемный пакет rollup
 RUN npm install @rollup/rollup-linux-x64-gnu --no-save || true
 
 COPY . .
-
 RUN npm run build
 
+# Этап 2: Подготовка данных для Volume
 FROM alpine:latest
+WORKDIR /app
+COPY --from=build /app/dist ./dist
 
-RUN mkdir -p /usr/share/nginx/html
-COPY --from=builder /app/dist /app-dist
-
-# Копируем собранный фронтенд в общий том. Он используется контейнером nginx.
-CMD ["sh", "-c", "cp -r /app-dist/. /usr/share/nginx/html/ && sleep infinity"]
+# Копируем файлы в Volume при старте и оставляем контейнер "висеть"
+CMD sh -c "cp -rp /app/dist/. /usr/share/nginx/html/ && sleep infinity"

@@ -34,7 +34,8 @@ services:
     ports:
       - '8080:80'
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     networks:
       - afisha-network
     volumes:
@@ -58,8 +59,6 @@ services:
       LOGGER_TYPE: ${LOGGER_TYPE}
     ports:
       - '${PORT}:3000'
-    volumes:
-      - ./backend/public/content:/app/public/content
     depends_on:
       postgres:
         condition: service_healthy
@@ -71,19 +70,10 @@ services:
     container_name: film-frontend
     build:
       context: frontend
-    environment:
-      VITE_BASE_URL: /
-      VITE_API_URL: ${VITE_API_URL}
-      VITE_CDN_URL: ${VITE_CDN_URL}
     volumes:
       - frontend_build:/usr/share/nginx/html
     networks:
       - afisha-network
-    healthcheck:
-      test: ["CMD-SHELL", "test -f /usr/share/nginx/html/index.html && grep -q \"assets/\" /usr/share/nginx/html/index.html"]
-      interval: 5s
-      timeout: 2s
-      retries: 20
 
   nginx:
     image: ghcr.io/${OWNER}/film-react-nest-nginx:latest
@@ -95,12 +85,9 @@ services:
       - '80:80'
     volumes:
       - frontend_build:/usr/share/nginx/html:ro
-      - ./backend/public/content:/usr/share/nginx/html/content
     depends_on:
       backend:
         condition: service_started
-      frontend:
-        condition: service_healthy
     networks:
       - afisha-network
 
