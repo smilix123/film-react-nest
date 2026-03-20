@@ -18,6 +18,8 @@ RUN npm ci --only=production && npm cache clean --force
 
 COPY --from=builder /app/dist ./dist
 
+COPY ./test /app/test
+
 EXPOSE 3000
 
 CMD ["node", "dist/main.js"]

@@ -34,8 +34,7 @@ services:
     ports:
       - '8080:80'
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     networks:
       - afisha-network
     volumes:
@@ -48,10 +47,8 @@ services:
       context: backend
     restart: unless-stopped
     environment:
-      DATABASE_DRIVER: ${DATABASE_DRIVER}
       DATABASE_HOST: ${DATABASE_HOST}
       DATABASE_PORT: ${DATABASE_PORT}
-      DATABASE_URL: ${DATABASE_DRIVER}://postgres:${DATABASE_PORT}/${DATABASE_NAME}
       DATABASE_USER: ${DATABASE_USER}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       DATABASE_NAME: ${DATABASE_NAME}
@@ -59,6 +56,8 @@ services:
       LOGGER_TYPE: ${LOGGER_TYPE}
     ports:
       - '${PORT}:3000'
+    volumes:
+      - ./backend/public/content:/app/public/content
     depends_on:
       postgres:
         condition: service_healthy
@@ -70,24 +69,24 @@ services:
     container_name: film-frontend
     build:
       context: frontend
+    restart: unless-stopped
     volumes:
-      - frontend_build:/usr/share/nginx/html
+      - frontend_build:/build
     networks:
       - afisha-network
 
   nginx:
     image: ghcr.io/${OWNER}/film-react-nest-nginx:latest
     container_name: film-nginx
-    build:
-      context: nginx
     restart: unless-stopped
     ports:
       - '80:80'
     volumes:
-      - frontend_build:/usr/share/nginx/html:ro
+      - frontend_build:/usr/share/nginx/html/frontend
+      - ./backend/public/content:/usr/share/nginx/html/content
     depends_on:
-      backend:
-        condition: service_started
+      - backend
+      - frontend
     networks:
       - afisha-network
 
