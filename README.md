@@ -22,11 +22,9 @@
 - `nginx/Dockerfile` и `nginx/nginx.conf` — nginx-сервер, раздаёт статику и проксирует `/api/afisha` и `/content/afisha` в бэкенд
 - `docker-compose.yml` — оркестрация контейнеров
 
-В `docker-compose.yml` указаны имена образов в реестре `ghcr.io`:
+В `docker-compose.yml` автоматически вставляются имена образов в реестре `ghcr.io`:
 
-- `ghcr.io/smilix123/film-react-nest-frontend:latest`
-- `ghcr.io/smilix123/film-react-nest-backend:latest`
-- `ghcr.io/smilix123/film-react-nest-nginx:latest`
+- `ghcr.io/${OWNER}/${REPO_NAME}/film-react-nest-frontend:latest`
 
 При желании вы можете переименовать их под свой GitHub-аккаунт и использовать `docker compose build` + `docker push` для деплоя в GitHub Container Registry.
 
@@ -54,7 +52,8 @@
 - `SERVER_HOST` - IP-адрес сервера
 - `SERVER_SSH_KEY` - приватный SSH-ключ (~/.ssh/id_rsa)
 - `PROJECT_PATH` - путь до проекта на сервере (например, /home/user/app)
-- `SERVER_USER` - пользователь (например `root`)
+- `SERVER_USER` - имя на сервере (например `root`)
+- `REPO_NAME` - название репозитория (для github actions)
 
 ### Запуск через Docker Compose
 

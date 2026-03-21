@@ -41,7 +41,7 @@ services:
       - pgadmin_data:/var/lib/pgadmin
 
   backend:
-    image: ghcr.io/${OWNER}/film-react-nest-backend:latest
+    image: ghcr.io/${OWNER}/${REPO_NAME}/film-react-nest-backend:latest
     container_name: film-backend
     build:
       context: backend
@@ -65,7 +65,7 @@ services:
       - afisha-network
 
   frontend:
-    image: ghcr.io/${OWNER}/film-react-nest-frontend:latest
+    image: ghcr.io/${OWNER}/${REPO_NAME}/film-react-nest-frontend:latest
     container_name: film-frontend
     build:
       context: frontend
@@ -76,7 +76,7 @@ services:
       - afisha-network
 
   nginx:
-    image: ghcr.io/${OWNER}/film-react-nest-nginx:latest
+    image: ghcr.io/${OWNER}/${REPO_NAME}/film-react-nest-nginx:latest
     container_name: film-nginx
     build:
       context: .

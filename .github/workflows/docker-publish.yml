@@ -39,21 +39,21 @@ jobs:
         with:
           context: '{{defaultContext}}:backend'
           push: true
-          tags: ghcr.io/${{ env.REPO }}/film-react-nest-backend:latest
+          tags: ghcr.io/${{ env.REPO }}/${{ github.event.repository.name }}/film-react-nest-backend:latest
 
       - name: Build and push frontend
         uses: docker/build-push-action@v6
         with:
           context: '{{defaultContext}}:frontend'
           push: true
-          tags: ghcr.io/${{ env.REPO }}/film-react-nest-frontend:latest
+          tags: ghcr.io/${{ env.REPO }}/${{ github.event.repository.name }}/film-react-nest-frontend:latest
 
       - name: Build and push nginx
         uses: docker/build-push-action@v6
         with:
           context: '{{defaultContext}}:nginx'
           push: true
-          tags: ghcr.io/${{ env.REPO }}/film-react-nest-nginx:latest
+          tags: ghcr.io/${{ env.REPO }}/${{ github.event.repository.name }}/film-react-nest-nginx:latest
 
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
