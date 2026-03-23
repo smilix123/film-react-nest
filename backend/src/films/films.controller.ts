@@ -18,6 +18,6 @@ export class FilmsController {
   async getFilmSchedule(
     @Param('id') id: string,
   ): Promise<FilmScheduleListResponseDto> {
-    return this.filmsService.getFilmsSchedule(id);
+    return this.filmsService.getFilmSchedule(id);
   }
 }

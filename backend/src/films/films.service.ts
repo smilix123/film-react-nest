@@ -30,7 +30,7 @@ export class FilmsService {
     };
   }
 
-  async getFilmsSchedule(id: string): Promise<FilmScheduleListResponseDto> {
+  async getFilmSchedule(id: string): Promise<FilmScheduleListResponseDto> {
     const film = await this.filmsRepository.findById(id);
     if (!film) {
       throw new NotFoundException('Фильм не найден');
